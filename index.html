@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Functions as a Service</title>
+
+    <meta
+      name="description"
+      content="A framework for easily creating beautiful presentations using HTML"
+    />
+    <meta name="author" content="Oleg Ilyenko" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"
+    />
+
+    <link rel="stylesheet" href="css/reveal.css" />
+    <link rel="stylesheet" href="css/theme/white.css" id="theme" />
+    <link rel="stylesheet" href="assets/custom.css" />
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css" />
+
+    <script src="assets/offline/fonts.js"></script>
+
+    <script src="https://use.typekit.net/jor2kyz.js"></script>
+    <script>
+      try {
+        Typekit.load({ async: true });
+      } catch (e) {}
+    </script>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match(/print-pdf/gi)
+        ? 'css/print/pdf.css'
+        : 'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--[if lt IE 9]> <script src="lib/js/html5shiv.js"></script> <![endif]-->
+
+    <link rel="stylesheet" href="assets/highlight/solarized_light.css" />
+
+    <link
+      href="//cdn.jsdelivr.net/graphiql/0.4.2/graphiql.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div id="credit" style="display: none"></div>
+
+    <div class="reveal">
+      <!--
+        Any section element inside of this container is displayed as a slide
+      -->
+      <div class="slides">
+        <section data-background="#212f40" class="first-slide">
+          <img
+            src="https://www.stratoscale.com/wp-content/uploads/AWS-Lambda.png"
+            class="logo-image"
+          />
+          <img
+            src="https://m.media-amazon.com/images/M/MV5BOGUxOTI3OGUtY2UyYS00NzRmLTk2ODQtMGRjZGY2Mjk5NTczXkEyXkFqcGdeQXVyNDc2NjEyMw@@._V1_.jpg"
+            style="width: 10%"
+          />
+
+          <p style="text-align: center" class="title-font">
+            Introduction to <strong>Functions as a Service</strong>
+          </p>
+
+          <p style="font-size: 70%; opacity: 0.5" class="normal-font">
+            by Glenn Ramel and Sarah Kaplan <br />
+            Borrowed deck from Oleg Ilyenko c/o Juan Cluade Van Damme
+          </p>
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">Functions as a Service</h2>
+          <ul>
+            <li>Serverless Computing/Architecture</li>
+            <li>Shifts responsibility for running server environment</li>
+            <li>Serves a request and terminates</li>
+            <li>Event-driven, episodic applications</li>
+            <li>Applications subject to unpredictable traffic patterns</li>
+          </ul>
+          <img src="" style="width: 80%" />
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">Functions as a Service</h2>
+          <img
+            src="https://cdn-images-1.medium.com/max/2000/1*ix3L4aKzAdBJAHA6d70Ocw.png"
+            style="width: 80%"
+          />
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">FaaS Advantages</h2>
+          <ul>
+            <li>Fewer developer logistics (i.e. infrastructure)</li>
+            <li>More time focused on writing code / app logic</li>
+            <li>Inherently scalable (i.e. functions vs. application)</li>
+            <li>Never pay for idle resources</li>
+            <li>Built in availability and fault tolerance</li>
+          </ul>
+          <img src="" style="width: 80%" />
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">FaaS Disadvantages</h2>
+          <ul>
+            <li>Decreased transparency</li>
+            <li>Potentially tough to debug</li>
+            <li>Auto-scaling of cost</li>
+            <li>Possibly difficult to track functions</li>
+            <li>Not currently mature</li>
+          </ul>
+          <img src="" style="width: 80%" />
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">Webhooks</h2>
+          <ul>
+            <li>A way to send automated messages / information</li>
+            <li>A way for the server to notify the client</li>
+            <li>No request is required</li>
+            <li>Real-time updates</li>
+            <li>Example: Zapier</li>
+          </ul>
+          <img src="" style="width: 80%" />
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">Our use case</h2>
+          <h5 style="text-align: left">The problem...</h5>
+          <ul>
+            <li>A product could sell out suddenly</li>
+            <li>External API (Shopify) keeps track of inventory</li>
+            <li>
+              GraphQL query to check Shopify inventory happens at build time
+            </li>
+            <li>UI won't update until LS team manually clicks "build"</li>
+            <li>
+              Hundreds of people might try to buy "sold-out" lipstick before the
+              UI is updated
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">The Solution</h2>
+
+          <div
+            style="display: flex; flex-direction: row; justify-content: space-around; width: 100%; margin-top: 1em"
+          >
+            <div style="background-color: white; padding: .5em">
+              <h5>USER</h5>
+              makes a purchase
+            </div>
+            <div style="margin: 1em">></div>
+            <div style="background-color: rgb(122, 122, 243); padding: .5em">
+              <h5>SHOPIFY</h5>
+              <ul>
+                <li>Inventory changes</li>
+                <li>Webhook calls Lambda function</li>
+              </ul>
+            </div>
+            <div style="margin: 1em">></div>
+            <div style="background-color: rgb(161, 241, 161); padding: .5em">
+              <h5>Lambda Fn</h5>
+              Invetory 0?
+              <ul>
+                <li>No: do nothing</li>
+                <li>Yes: webhook triggers build via Netlify</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">Our Use Case</h2>
+          <div
+            style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin-top: 1em"
+          >
+            <div style="width: 48%">
+              <h5>Benefits</h5>
+              <ul>
+                <li style="margin-bottom: .5em">
+                  Build (and query to shopify) only happens when inventory hits
+                  0
+                </li>
+                <li>
+                  Query happens at top level (flexibility to change many
+                  components)
+                </li>
+              </ul>
+            </div>
+            <div style="width: 48%">
+              <h5>Issues</h5>
+              <ul>
+                <li style="margin-bottom: .5em">
+                  Lambda fn runs with every purchase ($$$)
+                </li>
+                <li style="margin-bottom: .5em">Build lag time</li>
+                <li>Right now, build only changes 1 component</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">"Add to Cart" --> Query</h2>
+          <div
+            style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin-top: 1em"
+          >
+            <div style="width: 48%">
+              <h5>Benefits</h5>
+              <ul>
+                <li>Less "lag time" to reflect sold out in UI</li>
+              </ul>
+            </div>
+            <div style="width: 48%">
+              <h5>Issues</h5>
+              <ul>
+                <li style="margin-bottom: .5em">Lots of queries</li>
+                <li>
+                  Less flexibility (Query happens in a specific component)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 style="color: #ff7000">Additional Resources</h2>
+          <ul>
+            <li>https://www.netlify.com/docs/functions/</li>
+            <li>https://help.shopify.com/en/api/reference/events/webhook</li>
+            <li>https://martinfowler.com/articles/serverless.html</li>
+            <li>https://codeburst.io/what-are-webhooks-b04ec2bf9ca2</li>
+          </ul>
+        </section>
+        <section data-background="#212f40" class="first-slide">
+          <h1>Questions?</h1>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="assets/jquery-2.1.3.min.js"></script>
+    <script src="assets/custom.js"></script>
+
+    <script>
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          {
+            src: 'lib/js/classList.js',
+            condition: function() {
+              return !document.body.classList;
+            }
+          },
+          {
+            src: 'plugin/markdown/marked.js',
+            condition: function() {
+              return !!document.querySelector('[data-markdown]');
+            }
+          },
+          {
+            src: 'plugin/markdown/markdown.js',
+            condition: function() {
+              return !!document.querySelector('[data-markdown]');
+            }
+          },
+          {
+            src: 'plugin/highlight/highlight.js',
+            async: true,
+            condition: function() {
+              return !!document.querySelector('pre code');
+            },
+            callback: function() {
+              hljs.initHighlightingOnLoad();
+            }
+          },
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          { src: 'plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+  </body>
+</html>
