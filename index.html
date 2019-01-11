@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
 
-    <title>Functions as a Service</title>
+    <title>Debounce Functions</title>
 
     <meta
       name="description"
@@ -69,193 +69,90 @@
       <div class="slides">
         <section data-background="#212f40" class="first-slide">
           <img
-            src="https://www.stratoscale.com/wp-content/uploads/AWS-Lambda.png"
+            src="https://media3.giphy.com/media/tdhmM8ABJhblm/giphy.gif"
             class="logo-image"
-          />
-          <img
-            src="https://m.media-amazon.com/images/M/MV5BOGUxOTI3OGUtY2UyYS00NzRmLTk2ODQtMGRjZGY2Mjk5NTczXkEyXkFqcGdeQXVyNDc2NjEyMw@@._V1_.jpg"
-            style="width: 10%"
           />
 
           <p style="text-align: center" class="title-font">
-            Introduction to <strong>Functions as a Service</strong>
+            <strong>Debounce Functions</strong>
           </p>
 
           <p style="font-size: 70%; opacity: 0.5" class="normal-font">
-            by Glenn Ramel and Sarah Kaplan <br />
+            by Sarah Kaplan <br />
             Borrowed deck from Oleg Ilyenko c/o Juan Cluade Van Damme
           </p>
         </section>
 
         <section>
-          <h2 style="color: #ff7000">Functions as a Service</h2>
-          <ul>
-            <li>Serverless Computing/Architecture</li>
-            <li>Shifts responsibility for running server environment</li>
-            <li>Serves a request and terminates</li>
-            <li>Event-driven, episodic applications</li>
-            <li>Applications subject to unpredictable traffic patterns</li>
+          <h2 style="margin-bottom: 1em;">Debounce Functions</h2>
+          <ul style="width: 70%">
+            <li>What is a debounce function?</li>
+            <li>Demo</li>
+            <li>Using debounce in React</li>
           </ul>
-          <img src="" style="width: 80%" />
         </section>
 
         <section>
-          <h2 style="color: #ff7000">Functions as a Service</h2>
-          <img
-            src="https://cdn-images-1.medium.com/max/2000/1*ix3L4aKzAdBJAHA6d70Ocw.png"
-            style="width: 80%"
-          />
+          <h2>What does a debounce function do?</h2>
+          <img src="./assets/img/debounceExample.png" style="width: 80%" />
+          <p style="text-align: left; width: 80%; padding-left: 3em">Prevents a function from being called many times in succession</p>
         </section>
 
         <section>
-          <h2 style="color: #ff7000">FaaS Advantages</h2>
+          <img src="./assets/img/debounceCode.png" style="width: 50%" />
           <ul>
-            <li>Fewer developer logistics (i.e. infrastructure)</li>
-            <li>More time focused on writing code / app logic</li>
-            <li>Inherently scalable (i.e. functions vs. application)</li>
-            <li>Never pay for idle resources</li>
-            <li>Built in availability and fault tolerance</li>
+            <li>returns a function that will not be called while it is being continuously invoked</li>
+            <li>func is called after it stops being invoked for 'wait' milliseconds</li>
+            <li>Uses setTimeout and closure</li>
           </ul>
-          <img src="" style="width: 80%" />
         </section>
 
         <section>
-          <h2 style="color: #ff7000">FaaS Disadvantages</h2>
-          <ul>
-            <li>Decreased transparency</li>
-            <li>Potentially tough to debug</li>
-            <li>Auto-scaling of cost</li>
-            <li>Possibly difficult to track functions</li>
-            <li>Not currently mature</li>
-          </ul>
-          <img src="" style="width: 80%" />
-        </section>
-
-        <section>
-          <h2 style="color: #ff7000">Webhooks</h2>
-          <ul>
-            <li>A way to send automated messages / information</li>
-            <li>A way for the server to notify the client</li>
-            <li>No request is required</li>
-            <li>Real-time updates</li>
-            <li>Example: Zapier</li>
-          </ul>
-          <img src="" style="width: 80%" />
-        </section>
-
-        <section>
-          <h2 style="color: #ff7000">Our use case</h2>
-          <h5 style="text-align: left">The problem...</h5>
-          <ul>
-            <li>A product could sell out suddenly</li>
-            <li>External API (Shopify) keeps track of inventory</li>
-            <li>
-              GraphQL query to check Shopify inventory happens at build time
-            </li>
-            <li>UI won't update until LS team manually clicks "build"</li>
-            <li>
-              Hundreds of people might try to buy "sold-out" lipstick before the
-              UI is updated
+          <h2 style=" margin-bottom: 1em">Common uses for a debounce function</h2>
+          <ul style="width: 60%">
+            <li>Window resize events</li>
+            <li>Scroll events</li>
+            <li>          <a href="https://codepen.io/sk001/pen/pqxaLo?editors=0010">Demo</a>
             </li>
           </ul>
         </section>
 
         <section>
-          <h2 style="color: #ff7000">The Solution</h2>
-
-          <div
-            style="display: flex; flex-direction: row; justify-content: space-around; width: 100%; margin-top: 1em"
-          >
-            <div style="background-color: white; padding: .5em">
-              <h5>USER</h5>
-              makes a purchase
-            </div>
-            <div style="margin: 1em">></div>
-            <div style="background-color: rgb(122, 122, 243); padding: .5em">
-              <h5>SHOPIFY</h5>
-              <ul>
-                <li>Inventory changes</li>
-                <li>Webhook calls Lambda function</li>
-              </ul>
-            </div>
-            <div style="margin: 1em">></div>
-            <div style="background-color: rgb(161, 241, 161); padding: .5em">
-              <h5>Lambda Fn</h5>
-              Invetory 0?
-              <ul>
-                <li>No: do nothing</li>
-                <li>Yes: webhook triggers build via Netlify</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 style="color: #ff7000">Our Use Case</h2>
-          <div
-            style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin-top: 1em"
-          >
-            <div style="width: 48%">
-              <h5>Benefits</h5>
-              <ul>
-                <li style="margin-bottom: .5em">
-                  Build (and query to shopify) only happens when inventory hits
-                  0
-                </li>
-                <li>
-                  Query happens at top level (flexibility to change many
-                  components)
-                </li>
-              </ul>
-            </div>
-            <div style="width: 48%">
-              <h5>Issues</h5>
-              <ul>
-                <li style="margin-bottom: .5em">
-                  Lambda fn runs with every purchase ($$$)
-                </li>
-                <li style="margin-bottom: .5em">Build lag time</li>
-                <li>Right now, build only changes 1 component</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 style="color: #ff7000">"Add to Cart" --> Query</h2>
-          <div
-            style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin-top: 1em"
-          >
-            <div style="width: 48%">
-              <h5>Benefits</h5>
-              <ul>
-                <li>Less "lag time" to reflect sold out in UI</li>
-              </ul>
-            </div>
-            <div style="width: 48%">
-              <h5>Issues</h5>
-              <ul>
-                <li style="margin-bottom: .5em">Lots of queries</li>
-                <li>
-                  Less flexibility (Query happens in a specific component)
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 style="color: #ff7000">Additional Resources</h2>
-          <ul>
-            <li>https://www.netlify.com/docs/functions/</li>
-            <li>https://help.shopify.com/en/api/reference/events/webhook</li>
-            <li>https://martinfowler.com/articles/serverless.html</li>
-            <li>https://codeburst.io/what-are-webhooks-b04ec2bf9ca2</li>
+          <h2 style=" margin-bottom: 1em">I'm too lazy to write a debounce function...</h2>
+          <ul style="width: 70%">
+            <li><a href="https://lodash.com/">loDash</a></li>
+            <li><a href="https://github.com/slorber/awesome-debounce-promise">Awesome Debounce Promise (for React)</a></li>
+            <li>Many of implementations of debounce have additional parameters</li>
           </ul>
         </section>
+
+        <section>
+          <h2>Using debounce with React</h2>
+          <img src="https://images-na.ssl-images-amazon.com/images/I/91JU1zUEwXL.jpg" alt="" style="width: 50%">
+         <br>
+          <a href="http://localhost:3000/jobs">Jobly</a>
+        </section>
+
+        <section>
+          <h2 style=" margin-bottom: 1em">Bugs to Avoid</h2>
+          <ul>
+            <li>Remember to invoke the function that is returned from debounce</li>
+            <li>In React: make one debounced copy (in the constructor)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 style=" margin-bottom: 1em">Additional Resources</h2>
+          <ul>
+            <li><a href="https://john-dugan.com/javascript-debounce/">https://john-dugan.com/javascript-debounce/</a></li>
+            <li><a href="https://stackoverflow.com/questions/23123138/perform-debounce-in-react-js">Stack Overflow about debounce and React</a></li>
+          </ul>
+        </section>
+
         <section data-background="#212f40" class="first-slide">
           <h1>Questions?</h1>
         </section>
+
       </div>
     </div>
 
